@@ -11,10 +11,10 @@ function generateCirclePoints(segments = 256): THREE.Vector3[] {
   for (let i = 0; i <= segments; i++) {
     const t = i / segments;
     const angle = Math.PI * 0.5 + t * Math.PI * 2;
-    // Organic wobble for hand-drawn feel
+    // Organic wobble — all terms must be full cycles (even PI multiplier) for seamless join
     const wobbleR =
       Math.sin(t * Math.PI * 6) * 0.012 +
-      Math.sin(t * Math.PI * 13) * 0.006;
+      Math.sin(t * Math.PI * 14) * 0.006;
     const wobbleY = Math.cos(t * Math.PI * 8) * 0.008;
     const radius = 2.2 + wobbleR;
     points.push(
@@ -136,18 +136,22 @@ function CircleBrush({
             // Brush edge softness
             float edge = smoothstep(0.0, 0.35, vUv.y) * smoothstep(1.0, 0.65, vUv.y);
 
-            // Traveling light pulse
+            // Traveling light pulse (wrap-aware for closed circle)
             float pulse1 = fract(uTime * 0.12);
             float pulse2 = fract(uTime * 0.12 + 0.5);
-            float glow1 = exp(-pow((vUv.x - pulse1) * 8.0, 2.0));
-            float glow2 = exp(-pow((vUv.x - pulse2) * 8.0, 2.0)) * 0.6;
+            float d1 = abs(vUv.x - pulse1);
+            d1 = min(d1, 1.0 - d1);
+            float d2 = abs(vUv.x - pulse2);
+            d2 = min(d2, 1.0 - d2);
+            float glow1 = exp(-pow(d1 * 8.0, 2.0));
+            float glow2 = exp(-pow(d2 * 8.0, 2.0)) * 0.6;
             float travelGlow = glow1 + glow2;
 
             // Ambient breathing
             float breathe = 0.55 + 0.2 * sin(uTime * 1.2) + 0.1 * sin(uTime * 2.7 + 1.0);
 
-            // Ink texture
-            float inkVar = 0.8 + 0.2 * sin(vUv.x * 25.0 + uTime * 0.5);
+            // Ink texture (integer cycles for seamless wrap: 4 full cycles)
+            float inkVar = 0.8 + 0.2 * sin(vUv.x * 25.1327 + uTime * 0.5);
 
             float baseAlpha = edge * inkVar * breathe;
             float glowAlpha = travelGlow * edge * 1.5;
@@ -226,7 +230,9 @@ function CircleGlow({
             float breathe = 0.3 + 0.15 * sin(uTime * 1.2) + 0.1 * sin(uTime * 0.7);
 
             float pulse = fract(uTime * 0.12);
-            float glow = exp(-pow((vUv.x - pulse) * 6.0, 2.0)) * 0.5;
+            float dp = abs(vUv.x - pulse);
+            dp = min(dp, 1.0 - dp);
+            float glow = exp(-pow(dp * 6.0, 2.0)) * 0.5;
 
             float alpha = edge * (breathe * 0.15 + glow);
 
