@@ -32,11 +32,9 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="text-center text-[clamp(2.5rem,8vw,7rem)] font-semibold uppercase leading-[0.9] tracking-[-0.02em] text-white"
         >
-          We Build
+          From Vision
           <br />
-          <span className="text-[#0099ff]">Digital</span> Products
-          <br />
-          That Matter
+          to <span className="text-[#0099ff]">Launch</span>
         </motion.h1>
 
         {/* Description */}
@@ -44,10 +42,10 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.7 }}
-          className="mx-auto mt-10 max-w-md text-center text-[15px] leading-[1.7] text-[#666]"
+          className="mx-auto mt-10 max-w-lg text-center text-[15px] leading-[1.7] text-[#666]"
         >
-          Partnering with ambitious companies to design, build, and
-          scale world-class software.
+          We design, build, and ship software that turns ambitious ideas
+          into products people use. Web, mobile, AI&mdash;from day one to scale.
         </motion.p>
       </div>
 
